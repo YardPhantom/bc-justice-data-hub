@@ -1,0 +1,175 @@
+BC Justice Data Hub commands — v0.9.1
+Run commands from the site root: C:\inetpub\wwwroot\sites\bcjus
+
+COMMAND MENU
+------------
+.\command.cmd
+  Open a numbered command menu from the main site folder. Enter a command number to run it.
+
+MAIN COMMANDS
+-------------
+tools\setup.cmd
+  Install dependencies and initialize the local database.
+
+tools\collect-new.cmd
+  Collect and import only new or changed data. Remote metadata, workflow fingerprints and database changes are checked so current downloads, imports, indexes and exports are skipped.
+
+tools\collect-all.cmd
+  Force a complete source refresh, import, normalization and website export.
+
+tools\maintenance.cmd
+  Back up and optimize SQLite, remove temporary files, deduplicate downloads and validate local data.
+
+COLLECTION AND IMPORT
+---------------------
+tools\collect-justice.cmd
+  Collect justice sources such as court lists, judgments and prosecution material. Current downstream exports are skipped when the database fingerprint is unchanged.
+
+tools\sync-catalogue.cmd
+  Synchronize BC Data Catalogue metadata. Existing unchanged resources are skipped using saved remote metadata and local fingerprints.
+
+tools\sync-catalogue.cmd --download
+  Synchronize metadata and download supported Catalogue resources.
+
+tools\import-data.cmd
+  Import only new or changed Catalogue and local data files into SQLite; skip current exports when no rows change.
+
+tools\queue-files.cmd
+  Queue local HTML, PDF, CSV or Excel files for hashing and import/indexing.
+
+tools\import-cso.cmd
+  Import the controlled CSO case-index CSV workflow; skip export rebuilding when no new CSO records are added.
+
+tools\retry-failed.cmd
+  Retry unresolved failed imports and stale resources; skip downstream rebuilding when nothing changes.
+
+REVIEWS, NOTES AND ACTIONS
+--------------------------
+tools\apply-reviews.cmd review-actions.csv
+  Apply exported review decisions to SQLite. Place the CSV in tools or pass a full path.
+
+tools\notes.cmd apply note-actions.csv
+  Apply exported private-note actions to SQLite.
+
+tools\advanced-features.cmd
+  Run case enrichment, timelines, duplicate checks, links, safeguards and advanced exports only when its database/script fingerprint changed.
+
+SYSTEM, VALIDATION AND STORAGE
+------------------------------
+tools\system-health.cmd
+  Check Python dependencies, database integrity, scheduled tasks, disk space and generated files.
+
+tools\validate-sources.cmd
+  Check official source URLs for failures, redirects or removed pages.
+
+tools\storage.cmd report
+  Generate storage usage and retention reports.
+
+tools\storage.cmd cleanup
+  Apply configured retention cleanup to old reports, downloads and temporary files.
+
+tools\setup-data.cmd
+  Install data-import dependencies only when requirements change, then initialize or migrate the database.
+
+WINDOWS TASK SCHEDULER
+----------------------
+tools\setup-scheduled-tasks.cmd
+  Install daily court-list, weekly Catalogue and monthly statistics tasks.
+
+tools\run-scheduled-tasks-now.cmd
+  Run the scheduled task commands immediately for testing.
+
+tools\remove-scheduled-tasks.cmd
+  Remove all BC Justice Data Hub scheduled tasks.
+
+tools\scheduled-daily-courts.cmd
+  Non-interactive daily court-list task target.
+
+tools\scheduled-weekly-catalogue.cmd
+  Non-interactive weekly Catalogue task target.
+
+tools\scheduled-monthly-statistics.cmd
+  Non-interactive monthly statistics task target.
+
+NOTES
+-----
+- Use collect-new.cmd for normal operation.
+- Use collect-all.cmd only for a forced full refresh or recovery.
+- Runtime data is stored locally in database, imports, reports and generated JSON files.
+- New version ZIPs should be extracted over the existing site folder so runtime data remains intact.
+
+BACKUPS
+-------
+tools\backup-db.cmd
+  Create a manual, integrity-checked SQLite backup immediately.
+
+tools\backup-db.cmd --keep 1 --reason "before manual work"
+  Create a backup and retain only the newest database backup.
+
+AUTOMATIC BACKUP POLICY
+-----------------------
+- Collection and import entry-point commands create a database backup before modifying data.
+- Collection stops if a required backup fails.
+- Backups are stored in backups\database.
+- Only the latest database backup is retained.
+- Manual collection and import commands ask Y/Yes or N/No before creating the backup. Scheduled tasks back up automatically.
+
+PERSON IDENTITY AND REPEAT OFFENDERS
+------------------------------------
+tools\person-identity.cmd
+  Rebuild aliases, identity confidence, offence normalization, conviction events and person exports only when identity inputs changed.
+
+HISTORICAL JUDGMENT COVERAGE
+----------------------------
+tools\collect-historical-judgments.cmd
+  Backfill older BC Provincial Court, Supreme Court, Court of Appeal and controlled regulatory decisions; refresh judgment search, prior-record extraction, person identities and repeat-offender history. Defaults to 1990 through the current year.
+
+tools\collect-historical-judgments.cmd 2000 2020
+  Backfill a specific inclusive year range.
+
+Optional environment setting:
+  set CANLII_API_KEY=your_api_key
+  Enables CanLII API metadata collection. Without a key, official archive discovery and controlled CSV/local-file imports still run.
+
+Controlled import manifest:
+  imports\historical-judgments\historical-judgments.csv
+  Add public decision URLs or local HTML/PDF files. Imported decisions remain review-required until names, offences, outcomes and sentences are verified.
+
+LOCAL SQLITE SEARCH API
+-----------------------
+The site wakes the loopback SQLite/FTS5 search API automatically whenever a page loads or a live search request is made. The API runs hidden and stops after five minutes without page or API activity. tools\setup.cmd installs the lightweight Windows logon helper used to start it on demand. JSON search remains available as a fallback.
+
+PERSON SEARCH QUALITY TESTS
+---------------------------
+tools\test-person-search.cmd
+  Run regression checks for phonetic names, typo tolerance, generated name formats, age/birth-year conflicts, common-name handling and candidate ranking.
+
+tools\test-data-retention.cmd
+  Run the daily-court retention regression test to confirm prior-day records survive corrected-file updates.
+
+Search quality regression tests:
+  tools\test-search-quality.cmd
+
+Incremental collection options:
+  tools\collect-new.cmd --quick   Check metadata and avoid unchanged heavy rebuilds.
+  tools\collect-new.cmd --force   Redownload and reimport supported sources.
+
+
+WORKFLOW SKIP CACHE
+-------------------
+The following commands compare database, WAL, script, requirements and input fingerprints before repeating expensive work:
+  tools\collect-new.cmd
+  tools\collect-justice.cmd
+  tools\collect-historical-judgments.cmd
+  tools\import-data.cmd
+  tools\import-cso.cmd
+  tools\retry-failed.cmd
+  tools\apply-reviews.cmd
+  tools\person-identity.cmd
+  tools\advanced-features.cmd
+  tools\scheduled-daily-courts.cmd
+  tools\scheduled-weekly-catalogue.cmd
+  tools\scheduled-monthly-statistics.cmd
+  tools\setup-data.cmd
+
+Use tools\collect-new.cmd --force only when you intentionally want supported sources downloaded and imported again.

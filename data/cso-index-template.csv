@@ -1,0 +1,2 @@
+person_name,file_number,court,location,event_date,status,verification,source_url,retrieved_at,notes
+Example Name,FILE-000,Provincial Court,Vancouver,2026-07-17,charged,review,https://justice.gov.bc.ca/cso/,2026-07-17T12:00:00-07:00,Do not infer guilt from appearance data

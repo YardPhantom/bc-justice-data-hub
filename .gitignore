@@ -1,0 +1,49 @@
+# OS and editor files
+.DS_Store
+Thumbs.db
+*~
+
+# Python and test artifacts
+*.py[cod]
+.coverage
+.pytest_cache/
+__pycache__/
+htmlcov/
+
+# Temporary files
+*.part
+*.tmp
+*.temp
+*.bak
+*.old
+
+# Generated data; retain required configuration files
+data/*
+!data/catalogue-config.json
+!data/collection-policy.json
+!data/courthouses.json
+!data/cso-index-template.csv
+!data/sources.json
+!data/status-model.json
+
+# Runtime reports and backups
+reports/
+backups/
+
+# Collected imports; retain published templates only
+imports/*
+!imports/manifest-template.csv
+!imports/cso/
+imports/cso/*
+!imports/cso/cso-case-template.csv
+
+# Runtime databases and locks
+database/*
+!database/README.md
+*.db
+*.sqlite
+*.sqlite3
+*.db-*
+*.sqlite-*
+*.sqlite3-*
+*.lock

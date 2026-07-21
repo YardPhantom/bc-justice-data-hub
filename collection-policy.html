@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="noindex,nofollow,noarchive" name="robots"/>
+<title>Collection Policy | BC Justice Data Hub</title>
+<link href="favicon.svg" rel="icon" type="image/svg+xml"/>
+<link href="style.css" rel="stylesheet"/>
+</head>
+<body id="top">
+<header class="site-head grouped-head">
+<a class="brand pill" href="index.html"><img alt="" aria-hidden="true" class="brand-icon" src="favicon.svg"/>Justice Data Hub</a>
+<nav aria-label="Primary navigation" class="grouped-nav">
+<a class="pill primary-nav-pill" href="appearance-search.html">Search</a>
+<div class="nav-menu"><button aria-expanded="false" aria-haspopup="true" class="pill nav-menu-toggle" type="button">Daily Justice <span aria-hidden="true">⌄</span></button><div class="nav-menu-list"><a href="index.html#dailyJustice">Daily Justice Overview</a><a href="today-court.html">Today's Court Lists</a><a href="court/index.html">Court Locations</a><a href="judgments.html">Recent Judgments</a><a href="collection-alerts.html">Collection Alerts</a></div></div>
+<div class="nav-menu"><button aria-expanded="false" aria-haspopup="true" class="pill nav-menu-toggle" type="button">Cases &amp; Review <span aria-hidden="true">⌄</span></button><div class="nav-menu-list"><a href="index.html#caseJudgmentTools">Cases, Judgments &amp; Review</a><a href="index.html#records">Case and Person Index</a><a href="judgments.html">Published Judgments</a><a href="case-timelines.html">Case Timelines</a><a href="case-links.html">Linked Proceedings</a><a href="cso-index.html">CSO Case Index</a><a href="review-centre.html">Review Centre</a><a href="identity-review.html">Identity Review</a></div></div>
+<div class="nav-menu"><button aria-expanded="false" aria-haspopup="true" class="pill nav-menu-toggle" type="button">Crime Statistics <span aria-hidden="true">⌄</span></button><div class="nav-menu-list"><a href="index.html#crimeStats">Crime Statistics</a><a href="stats/court-system.html">Court System</a><a href="stats/crime-policing.html">Crime and Policing</a><a href="police-data.html">Police Data</a><a href="statcan-crime.html">Statistics Canada Crime</a><a href="prosecution.html">Prosecution</a><a href="stats/corrections-custody.html">Corrections and Custody</a><a href="corrections-oversight.html">Corrections Oversight</a><a href="stats/youth-justice.html">Youth Justice</a><a href="stats/civil-forfeiture.html">Civil Forfeiture</a><a href="comparisons.html">Regional Comparisons</a><a href="map.html">Maps</a></div></div>
+<div class="nav-menu"><button aria-expanded="false" aria-haspopup="true" class="pill nav-menu-toggle" type="button">Admin System <span aria-hidden="true">⌄</span></button><div class="nav-menu-list"><a href="index.html#adminSystem">Admin System</a><a href="reports.html">Reports and Exports</a><a href="watchlists.html">Watchlists</a><a href="private-notes.html">Private Notes</a><a href="index.html#sources">Official Sources</a><a href="source-validation.html">Source Validation</a><a href="data-dictionary.html">Data Dictionary</a><a href="collection-policy.html">Collection Policy</a><a href="privacy-review.html">Privacy Review</a><a href="index.html#dataManager">Dataset Manager</a><a href="system-health.html">System Health</a><a href="scheduling.html">Scheduling</a><a href="retry-centre.html">Retry Centre</a><a href="index.html#commandsPanel">Commands</a><a href="sitemap.html">Sitemap</a></div></div>
+</nav>
+<button class="pill" id="themeBtn" type="button">Dark mode</button>
+</header>
+<main>
+<section class="hero panel">
+<div><p class="eyebrow">Local collection rules</p><h1>Collection policy</h1><p>A readable guide to which BC Data Catalogue resources are collected automatically, reviewed manually, or ignored.</p></div>
+<div class="warning"><strong>Private system</strong><span>These rules control local collection only. Every imported record keeps its source and retrieval information.</span></div>
+</section>
+<section class="panel">
+<div class="section-head"><div><p class="eyebrow">Automatic collection</p><h2>Enabled formats</h2></div></div>
+<div class="policy-pills"><span class="pill">CSV</span><span class="pill">XLS</span><span class="pill">XLSX</span><span class="pill">JSON</span><span class="pill">API</span></div>
+<p>These formats can be downloaded, staged and normalized by the local pipeline.</p>
+</section>
+<section class="panel">
+<div class="section-head"><div><p class="eyebrow">Manual decision</p><h2>Needs review</h2></div></div>
+<div class="policy-pills"><span class="pill">PDF</span><span class="pill">HTML</span><span class="pill">Unknown formats</span></div>
+<p>Review items remain visible in the pipeline queue until you enable or ignore them. PDF and HTML sources can be indexed as documents when enabled.</p>
+</section>
+<section class="panel">
+<div class="section-head"><div><p class="eyebrow">Not collected by default</p><h2>Ignored formats</h2></div></div>
+<div class="policy-pills"><span class="pill">WMS</span><span class="pill">KML</span></div>
+<p>Mapping services and geographic layers are skipped unless a dataset or resource override explicitly enables them.</p>
+</section>
+<section class="panel">
+<div class="section-head"><div><p class="eyebrow">Operational limits</p><h2>Rules and overrides</h2></div><a class="primary link-btn" download="" href="index.html#dataManager">Download JSON</a></div>
+<div class="policy-list">
+<article class="policy-row"><h3>Download limit</h3><p>100 MB per resource by default.</p></article>
+<article class="policy-row"><h3>Dataset override</h3><p>Applies one collection state to all resources belonging to a selected dataset.</p></article>
+<article class="policy-row"><h3>Resource override</h3><p>Overrides the dataset or format rule for one specific resource.</p></article>
+<article class="policy-row"><h3>Review accounting</h3><p>Resources marked <strong>review</strong> and failed imports are included in Open data reviews and the Review queue.</p></article>
+<article class="policy-row"><h3>Automatic scheduling</h3><p>Use <code>tools\setup-scheduled-tasks.cmd</code> to create daily court-list, weekly Catalogue, and monthly statistics tasks.</p></article>
+</div>
+<p class="policy-note">Edit <code>data/collection-policy.json</code>, then run <code>tools\collect-new.cmd</code> for normal updates. Use <code>tools\collect-all.cmd</code> only for a forced full refresh. See <a href="scheduling.html">Automatic scheduling</a>.</p>
+</section>
+<section class="panel"><div class="section-head"><div><p class="eyebrow">Data protection</p><h2>Automatic collection backups</h2></div></div><p>Before a collection or import command changes SQLite, the system creates an integrity-checked backup in <code>backups\database</code>. Collection stops if that backup fails. The latest 20 backups are retained by default.</p><p><code>tools\backup-db.cmd</code></p></section></main>
+<footer class="site-footer"><a class="footer-pill" href="index.html">BC Justice Data Hub</a><span class="footer-pill">Private local-use build</span><span class="footer-pill">Data must be verified against the official source</span><span class="footer-pill">v0.20.7</span><a aria-label="Back to top" class="footer-pill back-top-pill" href="#top">Back to top ↑</a></footer>
+<script src="js/shared-layout.js"></script>
+</body>
+</html>

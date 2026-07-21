@@ -1,0 +1,12 @@
+{
+  "statuses":[
+    {"id":"accused","label":"Accused / alleged","final":false,"meaning":"An allegation or investigation is reported; no approved charge or finding is implied."},
+    {"id":"charged","label":"Charged","final":false,"meaning":"A charge is recorded or approved; guilt has not been determined."},
+    {"id":"convicted","label":"Convicted","final":true,"meaning":"A court record or judgment confirms guilt."},
+    {"id":"acquitted","label":"Acquitted","final":true,"meaning":"A court found the accused not guilty."},
+    {"id":"stayed","label":"Charges stayed","final":true,"meaning":"Proceedings were stayed; this is not a conviction."},
+    {"id":"withdrawn","label":"Withdrawn","final":true,"meaning":"The charge was withdrawn; this is not a conviction."},
+    {"id":"dismissed","label":"Dismissed","final":true,"meaning":"The proceeding or charge was dismissed; this is not a conviction."},
+    {"id":"unknown","label":"Outcome unknown","final":false,"meaning":"The available source does not establish the current outcome."}
+  ]
+}

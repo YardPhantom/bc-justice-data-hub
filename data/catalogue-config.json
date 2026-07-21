@@ -1,0 +1,19 @@
+{
+  "api_base": "https://catalogue.data.gov.bc.ca/api/3/action",
+  "catalogue_base": "https://catalogue.data.gov.bc.ca/dataset/",
+  "search_terms": [
+    "justice",
+    "criminal court",
+    "crime police",
+    "corrections custody",
+    "prosecution",
+    "court services",
+    "youth justice",
+    "civil forfeiture"
+  ],
+  "rows_per_query": 100,
+  "allowed_formats": ["CSV", "XLS", "XLSX", "JSON", "XML", "PDF", "HTML", "API", "WMS", "KML", "ZIP"],
+  "download_formats": ["CSV", "XLS", "XLSX", "JSON", "PDF"],
+  "download_enabled": false,
+  "request_delay_seconds": 0.35
+}

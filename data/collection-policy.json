@@ -1,0 +1,8 @@
+{
+  "auto_enable_formats": ["CSV", "XLS", "XLSX", "JSON", "API"],
+  "document_formats": ["PDF", "HTML"],
+  "ignored_formats": ["WMS", "KML"],
+  "max_download_mb": 100,
+  "dataset_overrides": {},
+  "resource_overrides": {}
+}

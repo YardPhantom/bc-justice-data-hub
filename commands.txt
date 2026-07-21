@@ -1,0 +1,433 @@
+BC Justice Data Hub commands — v0.20.7
+Run from: C:\inetpub\wwwroot\sites\bcjus
+
+START HERE
+--------------------
+.\command.cmd
+  Open the numbered command menu.
+
+TOOLS\COLLECT-NEW.CMD
+--------------------
+tools\collect-new.cmd
+  Collect new or changed data, publish initial exports, then run only the required post-processing automatically.
+
+Switch: --quick
+  Check metadata first and skip heavy unchanged work where supported.
+
+Switch: --force
+  Redownload and reimport supported sources and force downstream rebuilds.
+
+Switch: --skip
+  Skip the pre-collection database-backup prompt and continue without creating a backup.
+
+Switch: --wait
+  Keep Collect New open until automatic identity or non-identity post-processing and final exports are complete.
+
+TOOLS\COLLECT-ALL.CMD
+--------------------
+tools\collect-all.cmd
+  Force a complete Catalogue, justice, judgment and statistics refresh followed by exports.
+
+Switch: --term "TEXT"
+  Limit the Catalogue stage to an override search term; repeat for multiple terms.
+
+Switch: --limit N
+  Limit unique Catalogue datasets for a controlled full-refresh test.
+
+Switch: --verbose
+  Show detailed Catalogue URLs, downloads and skip reasons.
+
+Switch: --quick
+  Allow the Catalogue stage to skip unchanged downstream work; other full collectors still run.
+
+Switch: --force
+  Explicitly force the Catalogue stage in addition to the command's built-in full refresh.
+
+Switch: --incremental
+  Limit the Catalogue download stage to changed resources while other full collectors still run.
+
+SETUP AND MAINTENANCE
+--------------------
+tools\setup.cmd
+  Install dependencies, initialize or migrate the database, build exports and install the Search API helper.
+
+Switches: none
+  This command uses the standard setup workflow.
+
+tools\setup-data.cmd
+  Install data-import dependencies, initialize or migrate SQLite, and build initial exports.
+
+Switches: none
+  This command uses the standard data setup workflow.
+
+tools\maintenance.cmd
+  Run normal maintenance, safe backup handling, validation and storage cleanup.
+
+Switch: --full
+  Also run slow SQLite VACUUM and exhaustive duplicate-file hashing.
+
+tools\backup-db.cmd
+  Create an integrity-checked SQLite backup.
+
+Switch: --keep N
+  Retain the newest N managed database backups. N must be at least 1.
+
+Switch: --reason "TEXT"
+  Record the supplied reason in the backup manifest.
+
+COLLECTION AND IMPORT
+--------------------
+tools\collect-justice.cmd
+  Collect daily court lists, judgments and controlled CSO imports, then refresh exports when data changes.
+
+Argument: [CSO_FILE ...]
+  Optional CSV file paths passed to the controlled CSO import stage.
+
+py -u tools\collect_justice_sources.py setup
+  Create or verify justice-source tables.
+
+py -u tools\collect_justice_sources.py daily
+  Collect daily Provincial and Supreme Court lists and rebuild appearance exports.
+
+py -u tools\collect_justice_sources.py judgments
+  Collect published judgments and rebuild judgment exports.
+
+py -u tools\collect_justice_sources.py cso [CSV_FILE ...]
+  Import controlled CSO CSV files and rebuild exports.
+
+Argument: [CSV_FILE ...]
+  Optional CSO CSV paths. Without paths, configured CSO import files are used.
+
+py -u tools\collect_justice_sources.py all [CSV_FILE ...]
+  Run daily lists, judgments, controlled CSO imports and exports.
+
+Argument: [CSV_FILE ...]
+  Optional CSO CSV paths for the controlled import stage.
+
+py -u tools\collect_justice_sources.py export
+  Rebuild justice-source JSON and the SQLite Appearance Search cache without collecting.
+
+tools\collect-historical-judgments.cmd
+  Backfill official judgments from 1990 through the current year.
+
+Argument: [START_YEAR] [END_YEAR]
+  Limit the historical backfill to an inclusive year range.
+
+py -u tools\collect_historical_judgments.py
+  Run the historical judgment collector directly.
+
+Switch: --start-year YEAR
+  Set the first year to discover.
+
+Switch: --end-year YEAR
+  Set the final year to discover.
+
+Switch: --manifest PATH
+  Use a specific historical-judgment manifest CSV.
+
+Switch: --official
+  Discover bounded official archive and index pages.
+
+Switch: --canlii-api
+  Use optional CanLII metadata when CANLII_API_KEY is configured.
+
+Switch: --max-pages N
+  Limit official discovery pages.
+
+Switch: --max-depth N
+  Limit official link-discovery depth.
+
+Switch: --canlii-limit N
+  Limit CanLII API records.
+
+Switch: --export-only
+  Rebuild historical-judgment JSON from existing SQLite records without collecting.
+
+tools\sync-catalogue.cmd
+  Synchronize BC Data Catalogue metadata.
+
+Switch: --download
+  Download supported CSV, XLS, XLSX, JSON and PDF resources.
+
+Switch: --term "TEXT"
+  Override configured search terms; repeat the switch for multiple terms.
+
+Switch: --limit N
+  Limit unique datasets for a test run. Zero means no limit.
+
+Switch: --import
+  Import downloaded files and refresh the local data explorer.
+
+Switch: --incremental
+  Download only new or changed resources.
+
+Switch: --verbose
+  Show detailed URLs, downloads and skip reasons.
+
+Switch: --force
+  Redownload supported resources even when metadata is unchanged.
+
+Switch: --quick
+  Skip downstream import and export work when no resources changed.
+
+tools\import-data.cmd
+  Import new or changed Catalogue and local files, then refresh exports when SQLite changes.
+
+Switches: none
+  This command uses the queued and configured import folders.
+
+tools\queue-files.cmd FILE [FILE ...]
+  Queue one or more local HTML, PDF, CSV, JSON or Excel files for provenance-aware import.
+
+Argument: FILE [FILE ...]
+  One or more local file paths; files may also be dragged onto the CMD file.
+
+tools\import-cso.cmd [CSV_FILE ...]
+  Import the older controlled CSO case-index CSV format.
+
+Argument: [CSV_FILE ...]
+  Optional CSO CSV paths. Without paths, files in the configured CSO import folder are used.
+
+tools\retry-failed.cmd
+  Retry failed and pending imports and refresh reports when data changes.
+
+Switches: none
+  This command operates on currently failed or pending resources.
+
+CSO CHARGE WORKFLOW
+--------------------
+py -u tools\cso_charge_pipeline.py queue
+  Prepare unresolved court-file lookups for manual CSO retrieval.
+
+Switch: --cap N
+  Limit the lookup queue size. Default: 250.
+
+Switch: --refresh-dispositions
+  Queue already cached files for a later manual disposition recheck.
+
+py -u tools\cso_charge_pipeline.py import
+  Import saved CSO HTML, CSV or JSON records from imports\cso-inbox.
+
+Switch: --cap N
+  Accepted for command consistency; queue size is used only by queue/all actions.
+
+py -u tools\cso_charge_pipeline.py link
+  Link cached CSO cases and charges to appearances and normalized cases.
+
+Switch: --cap N
+  Accepted for command consistency; queue size is used only by queue/all actions.
+
+py -u tools\cso_charge_pipeline.py all
+  Import, link and prepare the next unresolved lookup queue.
+
+Switch: --cap N
+  Limit the newly prepared queue. Default: 250.
+
+Switch: --refresh-dispositions
+  Prepare cached files for disposition refresh after import and linking.
+
+IDENTITY, REVIEWS AND EXPORTS
+--------------------
+tools\person-identity.cmd
+  Rebuild aliases, identities, conviction events, repeat-offender data and person exports.
+
+Switch: --force
+  Run even when the workflow fingerprint says identity data is current.
+
+tools\advanced-features.cmd
+  Rebuild enrichment, timelines, links and advanced exports.
+
+Switch: --force
+  Run even when the workflow fingerprint says advanced features are current.
+
+Switch: --profile all
+  Run the full advanced-feature profile through the wrapper.
+
+Switch: --profile identity
+  Run only identity-related advanced stages through the wrapper.
+
+py -u tools\advanced_features.py
+  Run advanced-feature stages directly.
+
+Switch: --profile all
+  Run the full advanced-feature pipeline. This is the default.
+
+Switch: --profile identity
+  Run only identity-related advanced stages.
+
+tools\apply-reviews.cmd [ACTION_FILE]
+  Apply review decisions to SQLite and rebuild dependent exports when records change.
+
+Argument: [ACTION_FILE]
+  Optional review-actions CSV path. Default: review-actions.csv.
+
+tools\notes.cmd apply [ACTION_FILE]
+  Apply private-note actions.
+
+Argument: [ACTION_FILE]
+  Optional note-actions CSV path. Default: tools\note-actions.csv.
+
+DATA PIPELINE
+--------------------
+py -u tools\data_pipeline.py setup
+  Create or migrate the SQLite schema.
+
+py -u tools\data_pipeline.py import
+  Import queued and configured local data.
+
+py -u tools\data_pipeline.py export
+  Rebuild dashboard, search, courthouse and statistics JSON exports.
+
+py -u tools\data_pipeline.py all
+  Run setup, import and export in one process.
+
+py -u tools\data_pipeline.py queue FILE [FILE ...]
+  Queue one or more local files for import.
+
+Argument: FILE [FILE ...]
+  One or more local HTML, PDF, CSV, JSON or Excel paths.
+
+STATISTICS CANADA
+--------------------
+py -u tools\collect_statcan_crime.py
+  Refresh configured Statistics Canada crime tables incrementally.
+
+Switch: --quick
+  Perform metadata checks and avoid uncertain large downloads.
+
+Switch: --force
+  Redownload and reimport even when remote metadata is unchanged.
+
+Switch: --refresh-large
+  Deliberately download and rebuild the very large 35100184 table.
+
+SEARCH API
+--------------------
+tools\install-search-helper.cmd
+  Install and start the Windows on-logon Search API supervisor task.
+
+Switches: none
+  The helper uses the configured loopback ports.
+
+py -u tools\search_supervisor.py
+  Run the loopback Search API supervisor on 127.0.0.1:8764.
+
+Switches: none
+  Use /wake and /status on the supervisor endpoint.
+
+py -u tools\search_api.py
+  Run the local SQLite/FTS5 Search API directly.
+
+Switch: --host ADDRESS
+  Bind to a loopback address. Default: 127.0.0.1.
+
+Switch: --port N
+  Set the API port. Default: 8765.
+
+Switch: --idle-timeout SECONDS
+  Stop after the configured idle period. Default: 300.
+
+py tools\sqlite_concurrency.py
+  Enable SQLite WAL mode and concurrency settings before collection or maintenance writes.
+
+Switch: --database PATH
+  Configure a different SQLite database. Default: database\bc_justice.db.
+
+Switch: --timeout SECONDS
+  Set how long to wait for an existing writer before failing. Default: 60.
+
+SYSTEM AND STORAGE
+--------------------
+tools\system-health.cmd
+  Refresh dependency, database, schedule, storage and generated-file health checks.
+
+Switches: none
+  Writes data\system-health.json.
+
+tools\validate-sources.cmd
+  Check official source URLs, redirects and failures.
+
+Switches: none
+  Uses the configured source registry.
+
+tools\storage.cmd report
+  Generate the storage and retention report.
+
+Argument: report
+  Report current database, imports, reports and generated-data storage.
+
+tools\storage.cmd cleanup
+  Run the supported maintenance cleanup workflow.
+
+Argument: cleanup
+  Delegates cleanup to tools\maintenance.cmd.
+
+SCHEDULED TASKS
+--------------------
+tools\setup-scheduled-tasks.cmd
+  Install daily court, weekly Catalogue and monthly statistics tasks.
+
+Switches: none
+  Run as Administrator if Task Scheduler denies access.
+
+tools\run-scheduled-tasks-now.cmd
+  Send start requests to all configured scheduled tasks.
+
+Switches: none
+  Review reports\scheduler for completion logs.
+
+tools\remove-scheduled-tasks.cmd
+  Remove all BCJUS scheduled tasks and the Search API helper task.
+
+Switches: none
+  Removes the configured Windows Task Scheduler entries.
+
+tools\scheduled-daily-courts.cmd
+  Run the daily court-list scheduled target with automatic backup and logging.
+
+Switches: none
+  Intended for Task Scheduler.
+
+tools\scheduled-weekly-catalogue.cmd
+  Run the weekly incremental Catalogue target with automatic backup and logging.
+
+Switches: none
+  Intended for Task Scheduler.
+
+tools\scheduled-monthly-statistics.cmd
+  Run the monthly corrections, police and Statistics Canada target.
+
+Switches: none
+  Intended for Task Scheduler.
+
+TESTS
+--------------------
+tools\test-person-search.cmd
+  Run person-search and repeat-offender regression tests.
+
+Switches: none
+  Uses the project test files.
+
+tools\test-data-retention.cmd
+  Run daily-court retention regression tests.
+
+Switches: none
+  Uses the project test files.
+
+tools\test-search-quality.cmd
+  Run search-quality regression tests.
+
+Switches: none
+  Uses the project test files.
+
+NOTES
+--------------------
+- Use tools\collect-new.cmd for normal operation.
+- Manual collection and import commands prompt before backup; scheduled tasks back up automatically.
+- Collection stops when a required backup fails.
+- Managed database backups are stored in backups\database.
+- Runtime data remains in the existing database, imports, reports and generated JSON files.
+- CSO security-image completion and record retrieval remain manual; no command bypasses CSO controls.
+- Optional CanLII metadata requires CANLII_API_KEY.
+- Historical judgment manifest default: imports\historical-judgments\historical-judgments.csv
+- The local SQLite/FTS5 API is preferred; static JSON remains the fallback.
