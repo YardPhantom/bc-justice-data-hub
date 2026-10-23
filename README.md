@@ -344,3 +344,7 @@ Repeat-offender exports include a separate `repeat_appearances_only` tier derive
 - Merged the separate Name-column “Charge unavailable” warning into the existing “Charge Not Available” confidence badge.
 - Appearance Search now displays one Charge Not Available indicator linked to `#charge-confidence-not-available`.
 - Removed the separate visible `#charge-unavailable` Data Dictionary entry.
+
+---
+
+Built by [Trevor Heshka](https://trevorheshka.com).
