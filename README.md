@@ -1,5 +1,9 @@
 # BC Justice Data Hub v0.20.7
 
+![Screenshot of the home page](docs/screenshot.png)
+
+*Headless screenshot of `index.html` served locally (no live data backend; counts reflect bundled/empty local data).*
+
 ## v0.20.7 Appearance Search pagination cleanup
 
 - Removed the duplicate Show 50 / 100 selector from the bottom pagination row.
