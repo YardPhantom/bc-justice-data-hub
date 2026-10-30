@@ -352,3 +352,13 @@ Repeat-offender exports include a separate `repeat_appearances_only` tier derive
 ---
 
 Built by [Trevor Heshka](https://trevorheshka.com).
+
+---
+
+## Live app & author
+
+- **Live:** [BC Court List Archive](https://trevorheshka.com/done/bccourtslist/)
+- Built by [Trevor Heshka](https://trevorheshka.com/about/) · [Hesh Co.](https://trevorheshka.com/services/), Nanaimo, BC
+- More projects: https://trevorheshka.com/projects/
+
+Also set the repo **Website** field (currently empty) → https://trevorheshka.com/done/bccourtslist/ and add a one-line description above the changelog.
